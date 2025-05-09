@@ -3,7 +3,7 @@ import asyncio
 from collections import defaultdict
 import logging
 
-import aiosip
+import asipio
 
 locations = defaultdict(set)
 sip_config = {
@@ -60,9 +60,9 @@ async def on_subscribe(request, message):
     async def reader(peer):
         print('Forwarding subscription to {}'.format(peer))
         subscription = await peer.subscribe(
-            from_details=aiosip.Contact.from_header('sip:{}@{}:{}'.format(
+            from_details=asipio.Contact.from_header('sip:{}@{}:{}'.format(
                 user, sip_config['local_host'], sip_config['local_port'])),
-            to_details=aiosip.Contact.from_header('sip:{}@{}:{}'.format(
+            to_details=asipio.Contact.from_header('sip:{}@{}:{}'.format(
                 user, *addr)),
             password=sip_config['pwd'],
             expires=expires)
@@ -91,7 +91,7 @@ async def on_subscribe(request, message):
     print("Subscription forwarding ended!")
 
 
-class Dialplan(aiosip.BaseDialplan):
+class Dialplan(asipio.BaseDialplan):
 
     async def resolve(self, *args, **kwargs):
         await super().resolve(*args, **kwargs)
@@ -126,14 +126,14 @@ def main():
     args = parser.parse_args()
 
     loop = asyncio.get_event_loop()
-    app = aiosip.Application(loop=loop)
+    app = asipio.Application(loop=loop)
 
     if args.protocol == 'udp':
-        start(app, aiosip.UDP)
+        start(app, asipio.UDP)
     elif args.protocol == 'tcp':
-        start(app, aiosip.TCP)
+        start(app, asipio.TCP)
     elif args.protocol == 'ws':
-        start(app, aiosip.WS)
+        start(app, asipio.WS)
     else:
         raise RuntimeError("Unsupported protocol: {}".format(args.protocol))
 

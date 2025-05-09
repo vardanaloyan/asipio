@@ -4,7 +4,7 @@ import itertools
 import logging
 import random
 
-import aiosip
+import asipio
 
 from util import Registration
 
@@ -46,7 +46,7 @@ async def on_subscribe(request, message):
     print('Subscription ended!')
 
 
-class Dialplan(aiosip.BaseDialplan):
+class Dialplan(asipio.BaseDialplan):
 
     async def resolve(self, *args, **kwargs):
         await super().resolve(*args, **kwargs)
@@ -63,7 +63,7 @@ async def start(app, protocol):
     print('Serving on {} {}'.format(
         (sip_config['local_host'], sip_config['local_port']), protocol))
 
-    if protocol is aiosip.WS:
+    if protocol is asipio.WS:
         peer = await app.connect(
             'ws://{}:{}'.format(sip_config['srv_host'], sip_config['srv_port']),
             protocol=protocol,
@@ -76,13 +76,13 @@ async def start(app, protocol):
 
     return Registration(
         peer=peer,
-        from_details=aiosip.Contact.from_header('sip:{}@{}:{}'.format(
+        from_details=asipio.Contact.from_header('sip:{}@{}:{}'.format(
             sip_config['user'], sip_config['local_host'],
             sip_config['local_port'])),
-        to_details=aiosip.Contact.from_header('sip:{}@{}:{}'.format(
+        to_details=asipio.Contact.from_header('sip:{}@{}:{}'.format(
             sip_config['user'], sip_config['srv_host'],
             sip_config['srv_port'])),
-        contact_details=aiosip.Contact.from_header('sip:{}@{}:{}'.format(
+        contact_details=asipio.Contact.from_header('sip:{}@{}:{}'.format(
             sip_config['user'], sip_config['local_host'],
             sip_config['local_port'])),
         password=sip_config['pwd']
@@ -98,14 +98,14 @@ def main():
     sip_config['user'] = args.user
 
     loop = asyncio.get_event_loop()
-    app = aiosip.Application(loop=loop, dialplan=Dialplan())
+    app = asipio.Application(loop=loop, dialplan=Dialplan())
 
     if args.protocol == 'udp':
-        server = start(app, aiosip.UDP)
+        server = start(app, asipio.UDP)
     elif args.protocol == 'tcp':
-        server = start(app, aiosip.TCP)
+        server = start(app, asipio.TCP)
     elif args.protocol == 'ws':
-        server = start(app, aiosip.WS)
+        server = start(app, asipio.WS)
     else:
         raise RuntimeError("Unsupported protocol: {}".format(args.protocol))
 

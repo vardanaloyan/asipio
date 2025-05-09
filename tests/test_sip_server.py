@@ -1,10 +1,10 @@
-import aiosip
+import asipio
 
 
 async def test_subscribe(test_server, protocol, loop, from_details, to_details, close_order):
     callback_complete = loop.create_future()
 
-    class Dialplan(aiosip.BaseDialplan):
+    class Dialplan(asipio.BaseDialplan):
 
         async def resolve(self, *args, **kwargs):
             await super().resolve(*args, **kwargs)
@@ -15,9 +15,9 @@ async def test_subscribe(test_server, protocol, loop, from_details, to_details, 
             await request.prepare(status_code=200)
             callback_complete.set_result(message)
 
-    app = aiosip.Application(loop=loop)
+    app = asipio.Application(loop=loop)
 
-    server_app = aiosip.Application(loop=loop, dialplan=Dialplan())
+    server_app = asipio.Application(loop=loop, dialplan=Dialplan())
     server = await test_server(server_app)
 
     peer = await app.connect(
@@ -27,8 +27,8 @@ async def test_subscribe(test_server, protocol, loop, from_details, to_details, 
 
     await peer.subscribe(
         expires=1800,
-        from_details=aiosip.Contact.from_header(from_details),
-        to_details=aiosip.Contact.from_header(to_details),
+        from_details=asipio.Contact.from_header(from_details),
+        to_details=asipio.Contact.from_header(to_details),
     )
 
     received_request = await callback_complete
@@ -44,8 +44,8 @@ async def test_subscribe(test_server, protocol, loop, from_details, to_details, 
 
 
 async def test_response_501(test_server, protocol, loop, from_details, to_details, close_order):
-    app = aiosip.Application(loop=loop)
-    server_app = aiosip.Application(loop=loop)
+    app = asipio.Application(loop=loop)
+    server_app = asipio.Application(loop=loop)
     server = await test_server(server_app)
     peer = await app.connect(
         protocol=protocol,
@@ -53,8 +53,8 @@ async def test_response_501(test_server, protocol, loop, from_details, to_detail
     )
 
     subscription = await peer.subscribe(
-        from_details=aiosip.Contact.from_header(from_details),
-        to_details=aiosip.Contact.from_header(to_details),
+        from_details=asipio.Contact.from_header(from_details),
+        to_details=asipio.Contact.from_header(to_details),
     )
 
     assert subscription.status_code == 501
@@ -70,7 +70,7 @@ async def test_response_501(test_server, protocol, loop, from_details, to_detail
 
 async def test_exception_in_handler(test_server, protocol, loop, from_details, to_details, close_order):
 
-    class Dialplan(aiosip.BaseDialplan):
+    class Dialplan(asipio.BaseDialplan):
 
         async def resolve(self, *args, **kwargs):
             await super().resolve(*args, **kwargs)
@@ -80,9 +80,9 @@ async def test_exception_in_handler(test_server, protocol, loop, from_details, t
         async def on_subscribe(self, request, message):
             raise RuntimeError('Test error')
 
-    app = aiosip.Application(loop=loop)
+    app = asipio.Application(loop=loop)
 
-    server_app = aiosip.Application(loop=loop, dialplan=Dialplan())
+    server_app = asipio.Application(loop=loop, dialplan=Dialplan())
     server = await test_server(server_app)
 
     peer = await app.connect(
@@ -91,8 +91,8 @@ async def test_exception_in_handler(test_server, protocol, loop, from_details, t
     )
 
     subscription = await peer.subscribe(
-        from_details=aiosip.Contact.from_header(from_details),
-        to_details=aiosip.Contact.from_header(to_details),
+        from_details=asipio.Contact.from_header(from_details),
+        to_details=asipio.Contact.from_header(to_details),
     )
 
     assert subscription.status_code == 500

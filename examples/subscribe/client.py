@@ -4,7 +4,7 @@ import contextlib
 import logging
 import random
 
-import aiosip
+import asipio
 
 sip_config = {
     'srv_host': '127.0.0.1',
@@ -19,10 +19,10 @@ sip_config = {
 
 async def run_subscription(peer, duration):
     subscription = await peer.subscribe(
-        from_details=aiosip.Contact.from_header('sip:{}@{}:{}'.format(
+        from_details=asipio.Contact.from_header('sip:{}@{}:{}'.format(
             sip_config['user'], sip_config['local_host'],
             sip_config['local_port'])),
-        to_details=aiosip.Contact.from_header('sip:666@{}:{}'.format(
+        to_details=asipio.Contact.from_header('sip:666@{}:{}'.format(
             sip_config['srv_host'], sip_config['srv_port'])),
         password=sip_config['pwd'])
 
@@ -38,7 +38,7 @@ async def run_subscription(peer, duration):
 
 
 async def start(app, protocol, duration):
-    if protocol is aiosip.WS:
+    if protocol is asipio.WS:
         peer = await app.connect(
             'ws://{}:{}'.format(sip_config['srv_host'], sip_config['srv_port']),
             protocol=protocol,
@@ -60,14 +60,14 @@ def main():
     args = parser.parse_args()
 
     loop = asyncio.get_event_loop()
-    app = aiosip.Application(loop=loop)
+    app = asipio.Application(loop=loop)
 
     if args.protocol == 'udp':
-        loop.run_until_complete(start(app, aiosip.UDP, args.duration))
+        loop.run_until_complete(start(app, asipio.UDP, args.duration))
     elif args.protocol == 'tcp':
-        loop.run_until_complete(start(app, aiosip.TCP, args.duration))
+        loop.run_until_complete(start(app, asipio.TCP, args.duration))
     elif args.protocol == 'ws':
-        loop.run_until_complete(start(app, aiosip.WS, args.duration))
+        loop.run_until_complete(start(app, asipio.WS, args.duration))
     else:
         raise RuntimeError("Unsupported protocol: {}".format(args.protocol))
 

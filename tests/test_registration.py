@@ -1,4 +1,4 @@
-from aiosip import auth
+from asipio import auth
 
 
 AUTH = {

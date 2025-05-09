@@ -1,8 +1,8 @@
-import aiosip
+import asipio
 
 
 def test_simple_header():
-    header = aiosip.Contact.from_header('<sip:pytest@127.0.0.1:7000>')
+    header = asipio.Contact.from_header('<sip:pytest@127.0.0.1:7000>')
     assert not header['name']
     assert dict(header['params']) == {}
     assert dict(header['uri']) == {'scheme': 'sip',
@@ -17,7 +17,7 @@ def test_simple_header():
 
 def test_header_with_name_and_params():
     # RFC 3261 - 8.1.1.3
-    header = aiosip.Contact.from_header('Anonymous <sip:c8oqz84zk7z@privacy.org>;tag=hyh8')
+    header = asipio.Contact.from_header('Anonymous <sip:c8oqz84zk7z@privacy.org>;tag=hyh8')
     assert header['name'] == "Anonymous"
     assert dict(header['params']) == {'tag': 'hyh8'}
     assert dict(header['uri']) == {'scheme': 'sip',
@@ -31,7 +31,7 @@ def test_header_with_name_and_params():
 
 
 def test_header_with_quoted_name():
-    header = aiosip.Contact.from_header('"Pytest" <sip:pytest@127.0.0.1:7000>')
+    header = asipio.Contact.from_header('"Pytest" <sip:pytest@127.0.0.1:7000>')
     assert header['name'] == "Pytest"
     assert dict(header['params']) == {}
     assert dict(header['uri']) == {'scheme': 'sip',
@@ -46,7 +46,7 @@ def test_header_with_quoted_name():
 
 def test_header_with_quoted_name_and_space_before_params():
     # RFC 3261 - 8.1.1.3
-    header = aiosip.Contact.from_header('"Bob" <sips:bob@biloxi.com> ;tag=a48s')
+    header = asipio.Contact.from_header('"Bob" <sips:bob@biloxi.com> ;tag=a48s')
     assert header['name'] == 'Bob'
     assert dict(header['params']) == {'tag': 'a48s'}
     assert dict(header['uri']) == {'scheme': 'sips',
@@ -61,7 +61,7 @@ def test_header_with_quoted_name_and_space_before_params():
 
 def test_header_without_brackets():
     # RFC 3261 - 8.1.1.3
-    header = aiosip.Contact.from_header('sip:+12125551212@phone2net.com;tag=887s')
+    header = asipio.Contact.from_header('sip:+12125551212@phone2net.com;tag=887s')
     assert not header['name']
     assert dict(header['params']) == {'tag': '887s'}
     assert dict(header['uri']) == {'scheme': 'sip',
@@ -75,7 +75,7 @@ def test_header_without_brackets():
 
 
 def test_add_tag():
-    header = aiosip.Contact.from_header('<sip:pytest@127.0.0.1:7000>')
+    header = asipio.Contact.from_header('<sip:pytest@127.0.0.1:7000>')
     assert dict(header['params']) == {}
 
     header.add_tag()
